@@ -50,22 +50,20 @@ download_gtfs <- function(url, loc) {
 
 # Create a folder to store the data.
 dir.create('gtfs_data')
-
 download_gtfs(all_zips[[1]], 'gtfs_data/')
 
 
-
-
-
+# Move to the directory where the data is located.
 setwd('gtfs_data/a-reich-gmbh-busbetrieb/')
 
+# Read the files into R.
 routes     <- read.csv("routes.txt")
 stop_times <- read.csv("stop_times.txt")
 stops      <- read.csv("stops.txt")
 trips      <- read.csv("trips.txt")
 
 
-
+# Join the data together.
 stops %>% 
   inner_join(stop_times, by = "stop_id") %>%
   inner_join(trips, by = "trip_id") %>%
@@ -76,7 +74,7 @@ stops %>%
 ro1 <- data[data$trip_id == data$trip_id[1], ]
 
 
-m = leaflet() %>% addTiles()
+m <- leaflet() %>% addTiles()
 
 ro1 %>% arrange(route_id) -> ro1
 
@@ -84,5 +82,7 @@ ro1 %>% arrange(route_id) -> ro1
 (m %>%
    setView(lng = ro1$stop_lon[1], lat = ro1$stop_lat[1], zoom = 10) %>%
    addCircles(color = 'black', lat = ro1$stop_lat, lng = ro1$stop_lon))
+
+
 
 
